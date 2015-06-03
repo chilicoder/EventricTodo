@@ -14,7 +14,7 @@ todoContext.defineDomainEvents({
     }
 });
 
-todoContext.addAggregate('Todo', function() {
+todoContext = todoContext.addAggregate('Todo', function() {
     this.create = function(param) {
         this.$emitDomainEvent('TodoCreated',param);
     };
@@ -29,10 +29,7 @@ todoContext.addCommandHandlers({
             .then(function (todo) {
                 return todo.$save();
             });
-    }
-});
-
-todoContext.addCommandHandlers({
+    },
     ChangeTodoDescription: function(params) {
         return this.$aggregate.load('Todo', params.id)
             .then(function (todo) {
@@ -42,26 +39,36 @@ todoContext.addCommandHandlers({
     }
 });
 
+
 todoContext.subscribeToDomainEvent('TodoDescriptionChanged', function(domainEvent) {
     console.log('blabla',domainEvent.payload.description);
 });
 
-
-todoContext.initialize()
-    .then(function() {
-        todoContext.command('CreateTodo');
+var todoInstance = todoContext.initialize()
+    .then(function(value) {
+        return todoContext.command('CreateTodo');
     })
     .then(function(todoId) {
-        todoContext.command('ChangeTodoDescription', {
+        todoIdd = todoId;
+        console.log('todoId',todoId);
+        return todoContext.command('ChangeTodoDescription', {
             id: todoId,
             description: 'Do something'
         });
     });
 
-setInterval(function () {
-    console.log(Date());
-    todoContext.command('ChangeTodoDescription', {
-        description: 'Do something '+Date()
-    });
 
-},5000);
+todoInstance.then(function(id){
+    setInterval(function () {
+        console.log(Date());
+        todoContext.command('ChangeTodoDescription', {
+            id: id,
+            description: 'Do something '+Date()
+        });
+
+    },5000);
+});
+
+
+
+
