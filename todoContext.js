@@ -1,18 +1,22 @@
 Promise = require('promise');
 var eventric = require('eventric');
 
+eventric.log.setLogLevel('debug');
+
 var todoContext = eventric.context('Todo');
 
 todoContext.defineDomainEvents({
-    TodoCreated: function(params) {},
+    TodoCreated: function(params) {
+        console.log('Created todo',params);
+    },
     TodoDescriptionChanged: function(params) {
         this.description = params.description;
     }
 });
 
 todoContext.addAggregate('Todo', function() {
-    this.create = function() {
-        this.$emitDomainEvent('TodoCreated');
+    this.create = function(param) {
+        this.$emitDomainEvent('TodoCreated',param);
     };
     this.changeDescription = function(description) {
         this.$emitDomainEvent('TodoDescriptionChanged', {description: description});
@@ -53,3 +57,11 @@ todoContext.initialize()
             description: 'Do something'
         });
     });
+
+setInterval(function () {
+    console.log(Date());
+    todoContext.command('ChangeTodoDescription', {
+        description: 'Do something '+Date()
+    });
+
+},5000);

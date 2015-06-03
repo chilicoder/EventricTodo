@@ -5,7 +5,7 @@
   "scripts": {},
   "dependencies": {
     "debug": "~2.1.1",
-    "eventric": "^0.9.2",
+    "eventric": "^0.9.3",
     "promise": "^7.0.1"
   }
 }
