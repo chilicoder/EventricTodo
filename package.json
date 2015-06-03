@@ -1,0 +1,11 @@
+{
+  "name": "EventricTodo",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+  },
+  "dependencies": {
+    "debug": "~2.1.1",
+    "eventric": "^0.9.2"
+  }
+}
